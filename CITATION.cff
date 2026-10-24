@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you cite this repository, use the metadata below. To cite Ismail's Primitives itself, cite the paper by its DOI."
+title: "Decisional Assurance: Literacity documentation"
+type: generic
+authors:
+  - family-names: Ismail
+    given-names: Muhammed
+    orcid: "https://orcid.org/0009-0000-3713-7105"
+repository-code: "https://github.com/literacity/decisional-assurance"
+url: "https://literacity.github.io/decisional-assurance"
+date-released: 2026-10-24
+references:
+  - type: article
+    title: "Ismail's Primitives: A Unified Functional Theory of Necessity, Independence, and Sequential Dependence in Adaptive Decision Systems"
+    version: "V6.2"
+    doi: "10.5281/zenodo.23080967"
+    authors:
+      - family-names: Ismail
+        given-names: Muhammed
