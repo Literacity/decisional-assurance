@@ -1,0 +1,82 @@
+# The Literacity charter
+
+The charter is the long form of the argument, from the problem that prompts the question to the proof that answers it. The [how-it-works](../how-it-works.md) page gives the path of an engagement, and the field holds the definitions and criteria in full.
+
+## Why Literacity exists
+
+The [Dossier](https://decisional-integrity.github.io/Field/dossier/), *On Eroding Trust in Decision Firms*, compiles 26 independence-rated reports published between August 2020 and August 2026 on eight major consulting and audit firms and the industry around them. It finds six of the eight implicated in a significant scandal in the period and classifies the failures it documents at roughly 65% structural decisions and 35% operational execution. Its examples of structure include advisory fees exceeding audit fees across the Big Four (US$77 billion against US$53 billion, Bloomberg Tax, 2022-08-17) and a peer-reviewed study of KPMG in Germany in which the firm's audit clients suffered negative capital-market reactions after its non-audit failures while KPMG itself faced no significant consequences (Entry 14). It concludes that operational failures are the visible symptoms and structure is the cause.
+
+<img src="../images/04-dossier-evidence.png" alt="Dossier findings: 26 reports, six of eight firms implicated in a scandal, failures classed 65% structural and 35% operational, advisory fees of US$77 billion against audit fees of US$53 billion" width="800">
+
+The Dossier is an empirical synthesis, and its sources carry independence ratings that it states with each figure. The 65% and 35% are the Dossier's own classification. An audit shows where any one organisation's structure stands against the six.
+
+## What a missing primitive costs
+
+Where a primitive is missing, loss grows in proportion to time, whatever else the structure does well, and a plan that rests on that structure will fail. Every business decision area is in Class C, because information is incomplete, commitments are often irreversible, options can be comfortable without being best, some limits cannot be traded and markets change. Any one is enough. [Why the primitives matter](../why-it-matters.md) shows the arithmetic.
+
+## The question
+
+> What must a decision-maker get right, structurally, to avoid failure under uncertainty?
+
+When the cause of failure is structural, the useful question changes from who erred to what the structure needs. Every organisation decides through a structure: how it takes in information, chooses, commits, holds limits and revises its beliefs. A person, an institution or a machine can be the decider, and what matters over time is the standing arrangement that produces the decisions.
+
+## The answer in brief
+
+Ismail's Primitives identifies six primitives of a decision structure and proves each necessary. For each of six situations, a structure without the matching primitive loses ground in proportion to time. Lean 4 machine-checks the proofs. The field of Decisional Integrity states the criteria for possessing each primitive, and Literacity audits and verifies against those criteria.
+
+## What Literacity does for a decision-maker
+
+Literacity audits a decision structure against the field's open criteria and gives the client a finding for each of the six primitives, each citing the public criterion it rests on. Where the audit finds a gap, Literacity supports the client in installing the mechanism. It trains people in the open criteria and re-verifies when a structure changes. On a pass, it publishes a dated verification statement.
+
+An audit examines how decisions are made, so it proceeds without access to what the decisions were about. Findings are private to the client, and the client can check each one against the field. The [how-it-works](../how-it-works.md) page sets out the path.
+
+Literacity Pty Ltd is owned and directed by the author of the work. It is a team, and its work rests on his research from start to finish. The relationship is described on the [Literacity and Ismail](relationship-to-ismail.md) page.
+
+## Two terms
+
+Decisional Integrity is the property a decision structure has when, in a Class C environment, it possesses all six primitives of [Ismail's Primitives](https://doi.org/10.5281/zenodo.23080967). Decisional Assurance is the act of verifying whether a structure has it, and it is the service Literacity offers. A structure can have the property before anyone has verified it.
+
+## Six situations and Class C
+
+<img src="../images/09-six-situations-class-c.png" alt="Six structural situations, P1 to P6, each paired with its primitive, inside the class of environments called Class C" width="800">
+
+The theory applies to a class of environments called Class C. An environment belongs to it when it shows at least one of six structural situations, listed in the paper as P1 to P6.
+
+| Situation | In plain terms |
+|---|---|
+| P1 Reward ambiguity | More than one explanation of what is working fits the evidence, each calls for a different action, and only results over time separate them. |
+| P2 Absorbing trap | Some action, once taken, cannot be undone and offers nothing further, and the structure can reach it. |
+| P3 Local optimum | A comfortable plateau keeps the structure in place while a better region exists, and reaching it costs something first. |
+| P4 Deterministic optimum | The evidence has settled and one option clearly beats the alternatives. |
+| P5 Constrained feasibility | Some moves are off the table whatever the upside, because breaching the limit costs more than any reward can offset. |
+| P6 Nonstationarity | A relationship the structure relies on has changed. |
+
+Class C is a union. One situation is enough to place a decision area inside it, and every business decision area has at least one. The paper names the conditions under which none of the six arises: complete information, mistakes that can always be reversed, a path to the optimum without plateaus, choices with no hard limits, and a world that does not change. Those conditions describe an idealised world, and no business operates in one. The [self-check](../self-check.md) puts the six situations as questions an organisation can answer for itself, and the field's [Class C page](https://decisional-integrity.github.io/Field/field/class-c/) defines the class.
+
+## Six primitives
+
+A primitive is a capability. Each of the six answers one situation: telling apart explanations that call for different actions (X1), keeping the action that locks in permanent loss out of what the structure does (X2), probing past a comfortable plateau (X3), committing once the evidence supports one option (X4), treating a hard constraint as a wall (X5), and discarding evidence that went stale when the world changed (X6). The exact definitions are on the field's [field definition](https://decisional-integrity.github.io/Field/field/field-definition/) page.
+
+The theory states the structure a capability needs and leaves open what provides it. A manual spreadsheet, an automated database or a whole department can each qualify, provided it performs the primitive's function. For X2, a document that lists risks meets the test when decisions have followed it. The question to ask of any tool is whether it changes decisions, whether it is revised when circumstances change, and whether it operates wherever the situation arises. An answer such as "we do risk evaluation" describes a general activity. The primitive asks for a specific mechanism, and the field's [error theory](https://decisional-integrity.github.io/Field/field/error-theory/) page explains the difference.
+
+## What the proof establishes
+
+Part I of the paper proves, for each primitive, that a structure lacking it suffers linear regret in the minimal environment that exhibits the matching situation. Linear regret means the gap between what the structure achieved and the best available grows in proportion to time. Part II proves that none of the six can stand in for another, across all thirty ordered pairs. Both parts hold without conditions.
+
+Part III is a machine-checked bridge towards sufficiency. It proves the chain's logical architecture and names the further choices, a concrete algorithm, an environment and a goal variable, that sufficiency work for a given organisation fixes. That work is planned from Q4 2027.
+
+The definitions are published in full and open to anyone who reads them, and the self-check puts each of the six situations as a question about your own decisions. The field's [verification tiers](https://decisional-integrity.github.io/Field/field/verification-tiers/) page sorts each result by how it is supported.
+
+## How to check it
+
+The paper is at [DOI 10.5281/zenodo.23080967](https://doi.org/10.5281/zenodo.23080967) under CC BY 4.0, and the Lean 4 project is at [IsmailsPrimitives](https://github.com/M-Ismail-ZA/IsmailsPrimitives) under the MIT licence. Lean 4 checks a proof step by step and rejects it if any step is missing. As of 2026-10-24 the project has zero `sorry`, zero custom `axiom` and zero `opaque` definitions across 12,667 lines in seven files, and the README gives the commands to rebuild it. The field's [audit it yourself](https://decisional-integrity.github.io/Field/field/audit-it-yourself/) page shows where to read the statements and definitions. Every Literacity finding traces to the axioms in five steps: the finding names its criterion in the field, the field names its Lean definitions, the paper numbers the result, the Lean proof holds the theorem at a stated file and line, and Lean's kernel checks it from Mathlib's axioms. [The Trace](../the-trace.md) sets out the steps. [Ismail's Glossary](https://m-ismail-za.github.io/IsmailsGlossary/) indexes the 9,150 modules of Mathlib4, the library the proof is built on.
+
+## Ways to use the work
+
+The licences let any person or organisation read the theorems, apply them to its own decision structures and build them into its own methods, with attribution to Ismail as the author. Three routes lead from the proof to a sound decision structure, and each takes something different. They combine.
+
+An organisation can apply the open criteria itself, starting with the [self-check](../self-check.md). The necessity results attach to a mechanism that performs each function, so the criteria ask for records that show the mechanism operating. An organisation can also assemble a team with the competence the field's [competence page](https://decisional-integrity.github.io/Field/field/competence/) describes: formal verification in Lean 4, measure-theoretic probability, information theory and lower-bound theory, with knowledge of the setting assessed. The combination is uncommon, and a team can build it. The third route is to work with Literacity, where the team carries out every audit and the mathematician who proved the primitives is the final arbiter. [Why Literacity](../why-literacity.md) sets out what the work involves.
+
+## Contact
+
+Write to [literacity@outlook.com](mailto:literacity@outlook.com) or through the [Literacity page on LinkedIn](https://www.linkedin.com/company/literacity-research/). An engagement begins with a discovery call.
