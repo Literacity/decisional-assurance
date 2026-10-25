@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Literacity: decisional assurance</title>
+<meta name="description" content="Mathematics has proved six capabilities that a decision structure needs. Lean 4 checks the proof, and Literacity verifies whether your structure has them.">
+<meta property="og:title" content="Literacity: decisional assurance">
+<meta property="og:description" content="Mathematics has proved six capabilities that a decision structure needs. Lean 4 checks the proof, and Literacity verifies whether your structure has them.">
+<link rel="icon" type="image/png" href="assets/logo-mark.png">
+<style>
+:root{
+  --font-primary:'Times New Roman','Liberation Serif',Georgia,serif;
+  --color-primary:#1CABB0;
+  --color-primary-dark:#127A7E;
+  --color-primary-tint:#F1FAFA;
+  --paper:#FFFFFF; --paper-raised:#F7F6F1; --ink:#000000; --ink-dim:#5B5850;
+  --line:#E4E1D8; --line-strong:#CFC9B8; --shadow-rgb:20,20,20; --hyperlink:#0563C1;
+  --radius:10px; --radius-sm:6px;
+  --maxw-reading:min(720px,88vw); --maxw-wide:min(1100px,94vw);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;font-family:var(--font-primary);color:var(--ink);background-color:var(--paper);
+  background-image:radial-gradient(ellipse 700px 460px at 4% 0%,var(--color-primary-tint),transparent 60%),
+                   radial-gradient(ellipse 620px 420px at 98% 92%,var(--color-primary-tint),transparent 55%);
+  background-repeat:no-repeat;background-attachment:fixed;font-size:17px;line-height:1.65}
+a{color:var(--hyperlink)}
+:focus-visible{outline:2px solid var(--color-primary-dark);outline-offset:2px}
+img{max-width:100%;height:auto}
+.skip{position:absolute;left:-999px;top:8px;background:var(--paper);padding:8px 12px;border:1px solid var(--line);z-index:30}
+.skip:focus{left:8px}
+code{font-family:ui-monospace,'SF Mono',Consolas,monospace;font-size:.88em}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.bar-in{max-width:var(--maxw-wide);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:8px 0}
+.brand img{display:block;height:58px;width:auto}
+.nav{display:flex;align-items:center;gap:22px}
+.nav a.link{color:var(--ink);text-decoration:none;font-size:15.5px;font-weight:700;padding:6px 0;border-bottom:2px solid transparent}
+.nav a.link:hover{border-bottom-color:var(--color-primary)}
+.btn{display:inline-block;font-family:var(--font-primary);font-weight:700;font-size:16px;text-decoration:none;text-align:center;
+  padding:11px 22px;border-radius:var(--radius-sm);border:1.5px solid var(--color-primary);transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+.btn.primary{background:var(--color-primary);color:#000;box-shadow:0 4px 14px rgba(28,171,176,.24)}
+.btn.primary:hover{background:var(--color-primary-dark);color:#fff;transform:translateY(-1px);box-shadow:0 6px 18px rgba(28,171,176,.26)}
+.btn.ghost{background:var(--paper);color:var(--ink)}
+.btn.ghost:hover{background:var(--color-primary-tint);transform:translateY(-1px)}
+.btn.sm{font-size:14.5px;padding:8px 16px}
+.links .btn{font-size:15px;padding:9px 18px}
+.menu{display:none;position:relative}
+.menu summary{list-style:none;cursor:pointer;font-weight:700;padding:8px 14px;border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--paper)}
+.menu summary::-webkit-details-marker{display:none}
+.menu-list{position:absolute;right:0;top:46px;background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius);box-shadow:0 4px 18px rgba(var(--shadow-rgb),.08);padding:10px 18px;display:grid;gap:2px;min-width:200px}
+.menu-list a{color:var(--ink);text-decoration:none;font-weight:700;padding:8px 0}
+
+/* shared */
+.wrap{max-width:var(--maxw-wide);margin:0 auto}
+.eyebrow{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--color-primary-dark);margin:0 0 12px}
+h1{font-size:clamp(30px,4.2vw,46px);line-height:1.18;margin:0;font-weight:700;letter-spacing:-.005em}
+h2{font-size:clamp(25px,3vw,33px);line-height:1.25;color:var(--color-primary-dark);margin:0 0 12px}
+h3{font-size:19px;line-height:1.3;margin:0 0 8px}
+p{margin:0 0 14px}
+.rule{height:0;border-top:1.5px solid var(--color-primary);margin:22px 0}
+section.s{padding:68px 0 8px}
+.s-head{max-width:var(--maxw-reading);margin-bottom:26px}
+.lead{max-width:62ch}
+.card{border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius);box-shadow:0 4px 18px rgba(var(--shadow-rgb),.05);background:var(--paper);padding:22px 24px}
+.card.plain{border-top-color:var(--line-strong)}
+.card h3{margin-bottom:6px}
+.card p:last-child{margin-bottom:0}
+.tag{display:inline-block;background:var(--color-primary);color:#000;font-weight:700;font-size:12.5px;border-radius:999px;padding:2px 11px;margin-bottom:10px;letter-spacing:.03em}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.links{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0 0}
+.sub-h{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--color-primary-dark);margin:34px 0 14px}
+
+/* tables */
+.tw{overflow-x:auto;border-radius:var(--radius);box-shadow:0 4px 18px rgba(var(--shadow-rgb),.05)}
+table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius);overflow:hidden;background:var(--paper)}
+th{background:var(--color-primary);color:#000;text-transform:uppercase;letter-spacing:.03em;font-size:13px;text-align:left;padding:11px 18px;white-space:nowrap}
+td{padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top;font-size:16.5px;line-height:1.55}
+tr:last-child td{border-bottom:0}
+td.key{font-weight:700;color:var(--color-primary-dark);white-space:nowrap}
+
+/* hero */
+.hero{padding:62px 0 34px;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.8fr);gap:56px;align-items:center}
+.sub{font-size:19px;max-width:60ch;margin:0 0 14px}
+.support{max-width:60ch;margin:0 0 28px}
+.actions{display:flex;flex-wrap:wrap;gap:14px}
+.mark-card{border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius);box-shadow:0 4px 18px rgba(var(--shadow-rgb),.05);background:var(--paper);padding:30px;display:grid;place-items:center}
+.mark-card img{width:100%;max-width:300px;display:block}
+.stats{padding:6px 0 10px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.stat{border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--paper);padding:18px 18px 16px;box-shadow:0 4px 18px rgba(var(--shadow-rgb),.05)}
+.stat b{display:block;font-size:34px;line-height:1.1;color:var(--color-primary-dark);margin-bottom:6px}
+.stat span{display:block;font-size:15px;color:var(--ink-dim);line-height:1.45}
+.stat code{color:var(--ink);font-size:13px}
+
+/* capabilities */
+.cap p{font-size:16px;line-height:1.6}
+.classc{margin:28px 0 0;max-width:68ch}
+
+/* evidence */
+.finding .big{font-size:30px;font-weight:700;color:var(--color-primary-dark);line-height:1.15;margin-bottom:6px}
+.finding p{font-size:16px;line-height:1.6}
+.split{display:flex;height:44px;border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;margin:6px 0 10px;font-weight:700;font-size:15px}
+.split .a{background:var(--color-primary);color:#000;width:65%;display:flex;align-items:center;padding:0 14px}
+.split .b{background:var(--paper-raised);width:35%;display:flex;align-items:center;padding:0 14px}
+
+/* math */
+.fig{display:block;margin:6px 0 0;width:100%;max-width:800px;border-radius:var(--radius)}
+.part h3{margin-bottom:4px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:14px 0 14px}
+
+/* trace */
+.trace{list-style:none;margin:0;padding:0;max-width:880px}
+.trace li{display:grid;grid-template-columns:48px 1fr;gap:16px;align-items:start;border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius);box-shadow:0 4px 18px rgba(var(--shadow-rgb),.05);background:var(--paper);padding:16px 22px 16px 18px}
+.trace li.last{border-top-color:var(--ink)}
+.trace li + li{margin-top:34px;position:relative}
+.trace li + li::before{content:"";position:absolute;left:41px;top:-34px;width:2px;height:34px;background:var(--line-strong)}
+.trace .n{background:var(--color-primary);color:#000;font-weight:700;font-size:20px;text-align:center;border-radius:var(--radius-sm);padding:2px 0;width:48px}
+.trace h3{margin-bottom:2px}
+.trace p{margin:0;font-size:16.5px}
+.cmd{background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 18px;margin:0 0 12px;font-family:ui-monospace,'SF Mono',Consolas,monospace;font-size:14px;overflow-x:auto;white-space:pre}
+.cmd + p{font-size:15.5px;margin-bottom:18px}
+
+/* services */
+.svc{display:flex;flex-direction:column}
+.svc .tag{align-self:flex-start}
+.svc dl{margin:10px 0 14px}
+.svc dt{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-primary-dark);margin-top:10px}
+.svc dd{margin:2px 0 0;font-size:16px;line-height:1.55}
+.svc .go{margin-top:auto}
+.svc .go + .go{margin-top:10px}
+.quote{border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius);box-shadow:0 4px 18px rgba(var(--shadow-rgb),.05);padding:24px 28px;background:var(--paper)}
+.quote p{font-size:20px;line-height:1.6;margin:0}
+.quote .f{background:var(--color-primary-tint);border:1.5px solid var(--color-primary);border-radius:5px;padding:0 6px;white-space:nowrap}
+.dates{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin:24px 0 0}
+
+/* for you */
+.banner{background:var(--color-primary-tint);border:1px solid var(--color-primary);border-radius:var(--radius);padding:18px 24px;margin-top:18px;font-weight:700;font-size:18px}
+.ten{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.ten li{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius);box-shadow:0 4px 18px rgba(var(--shadow-rgb),.05);background:var(--paper);padding:14px 18px;font-size:17px;line-height:1.4}
+.ten .n{flex:none;background:var(--color-primary);color:#000;border-radius:var(--radius-sm);min-width:42px;text-align:center;padding:3px 0;font-size:19px}
+
+/* how */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.steps li{border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius);box-shadow:0 4px 18px rgba(var(--shadow-rgb),.05);background:var(--paper);padding:16px 18px}
+.steps .n{display:inline-block;background:var(--color-primary);color:#000;font-weight:700;border-radius:var(--radius-sm);min-width:34px;text-align:center;margin-bottom:8px}
+.steps h3{font-size:17px}
+.steps p{font-size:15.5px;line-height:1.55}
+.chain{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.chain .card{padding:16px 20px}
+
+/* about */
+.about{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:40px;align-items:start}
+.portrait{border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius);box-shadow:0 4px 18px rgba(var(--shadow-rgb),.05);overflow:hidden;background:#fff}
+.portrait img{display:block;width:100%}
+.timeline{list-style:none;margin:6px 0 18px;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.timeline li{border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius-sm);padding:10px 12px;font-size:14.5px;line-height:1.45;background:var(--paper)}
+.timeline b{display:block;color:var(--color-primary-dark);font-size:14px;margin-bottom:2px}
+.about ul{margin:0 0 14px;padding-left:22px}
+.about li{margin-bottom:6px}
+.about li::marker{color:var(--color-primary);font-weight:700}
+
+/* questions */
+.faq{max-width:880px}
+.faq details{border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius);box-shadow:0 4px 18px rgba(var(--shadow-rgb),.05);background:var(--paper);margin-bottom:14px}
+.faq summary{cursor:pointer;font-weight:700;font-size:18px;padding:16px 22px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--color-primary-dark);font-size:24px;line-height:1}
+.faq details[open] summary::after{content:"\2212"}
+.faq .ans{padding:0 22px 16px}
+.faq .ans p{margin:0}
+
+/* cta + contact */
+.cta{margin-top:40px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;border:1px solid var(--line);border-top:3px solid var(--color-primary);border-radius:var(--radius);background:var(--color-primary-tint);padding:18px 26px;box-shadow:0 4px 18px rgba(var(--shadow-rgb),.05)}
+.cta p{margin:0;font-weight:700;font-size:18px}
+.contact{margin-top:8px}
+.contact .card{padding:32px 34px}
+.msg{background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 20px;margin:20px 0 0;font-size:16px}
+.msg b{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--color-primary-dark);display:block;margin-bottom:6px}
+.msg p{margin:0 0 4px}
+
+/* footer */
+footer{margin-top:72px;border-top:1.5px solid var(--color-primary);background:var(--paper)}
+.foot{max-width:var(--maxw-wide);margin:0 auto;padding:30px 0 40px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:36px;align-items:start}
+.foot img{height:56px;width:auto;display:block}
+.foot ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.foot p{font-size:14.5px;color:var(--ink-dim);margin:14px 0 0}
+
+@media (max-width:980px){
+  .nav .link{display:none}
+  .menu{display:block}
+  .hero{grid-template-columns:1fr;gap:30px;padding-top:40px}
+  .mark-card{max-width:260px;padding:20px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grid3,.grid4{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .timeline{grid-template-columns:repeat(2,1fr)}
+  .about{grid-template-columns:1fr}
+  .portrait{max-width:300px}
+  .foot{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .brand img{height:48px}
+  .btn{padding:10px 16px;font-size:15px}
+  .bar-in .btn.primary{padding:8px 12px;font-size:14px}
+  .actions .btn{flex:1 1 auto}
+  .grid2,.grid3,.grid4,.facts,.dates,.ten,.steps,.chain,.timeline{grid-template-columns:1fr}
+  .stat b{font-size:28px}
+  th,td{padding:11px 12px}
+  td.key{white-space:normal}
+  .trace li{grid-template-columns:40px 1fr;gap:12px;padding:14px}
+  .trace .n{width:40px;font-size:17px}
+  .trace li + li::before{left:33px}
+  .quote p{font-size:18px}
+  .quote .f{white-space:normal}
+  .contact .card{padding:22px 20px}
+  .cta{padding:16px 18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#top" aria-label="Literacity, top of page"><img src="assets/logo-full.png" alt="Literacity"></a>
+    <nav class="nav" aria-label="Main">
+      <a class="link" href="#what">What it is</a>
+      <a class="link" href="#evidence">Evidence</a>
+      <a class="link" href="#mathematics">Mathematics</a>
+      <a class="link" href="#trace">The Trace</a>
+      <a class="link" href="#services">Services</a>
+      <a class="link" href="#for-you">For you</a>
+      <a class="link" href="#about">About</a>
+      <a class="btn primary" href="https://calendly.com/literacity/30min" target="_blank" rel="noopener">Book a call</a>
+      <details class="menu"><summary>Menu</summary>
+        <div class="menu-list">
+          <a href="#what">What it is</a><a href="#evidence">Evidence</a><a href="#mathematics">Mathematics</a>
+          <a href="#trace">The Trace</a><a href="#services">Services</a><a href="#for-you">For you</a><a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </details>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- 1 Hero -->
+<div id="top" class="wrap hero">
+  <div>
+    <p class="eyebrow">Literacity. Decisional assurance.</p>
+    <h1>What must a decision-maker get right, structurally, to avoid failure under uncertainty?</h1>
+    <div class="rule" aria-hidden="true"></div>
+    <p class="sub">Every proposal you approve is a decision, and the plan inside it is a structure that commits you to a course. Mathematics has proved six capabilities that structure needs. Lean 4 checks the proof, and anyone can rebuild it. Literacity verifies whether your structure has them.</p>
+    <p class="support">Literacity is a team whose work rests on one body of research, Ismail&rsquo;s, from start to finish. Ismail, who proved the primitives, is the final arbiter of every verification.</p>
+    <div class="actions">
+      <a class="btn primary" href="https://calendly.com/literacity/30min" target="_blank" rel="noopener">Book a discovery call</a>
+      <a class="btn ghost" href="#mathematics">See the proof</a>
+    </div>
+  </div>
+  <div class="mark-card"><img src="assets/logo-mark.png" alt="The Literacity mark: Omega of T inside a circling arrow"></div>
+</div>
+
+<div class="wrap stats" role="list" aria-label="The proof in four figures">
+  <div class="stat" role="listitem"><b>6</b><span>capabilities, each proved necessary</span></div>
+  <div class="stat" role="listitem"><b>12,667</b><span>lines of Lean 4 in seven files</span></div>
+  <div class="stat" role="listitem"><b>0</b><span><code>sorry</code>, custom <code>axiom</code> or <code>opaque</code> definitions as of 2026-10-24</span></div>
+  <div class="stat" role="listitem"><b>26</b><span>independence-rated reports behind the evidence</span></div>
+</div>
+
+<!-- 2 What it is -->
+<section class="wrap s" id="what" aria-labelledby="what-h">
+  <div class="s-head">
+    <p class="eyebrow">What it is</p>
+    <h2 id="what-h">What decisional assurance is</h2>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th scope="col">Term</th><th scope="col">Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="key">Ismail&rsquo;s Primitives</td><td>Six capabilities that a decision structure needs, proved necessary and checked in Lean 4.</td></tr>
+      <tr><td class="key">Decisional Integrity</td><td>The property a decision structure has when, in a Class C environment, it possesses all six primitives.</td></tr>
+      <tr><td class="key">Decisional Assurance</td><td>The act of verifying whether a structure has that property. Literacity offers it as a service.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="lead" style="margin-top:24px;font-size:18px">A structure can have the property before anyone verifies it. Verifying it is the service.</p>
+
+  <div class="grid3" style="margin-top:22px">
+    <article class="card cap"><span class="tag">X1</span><h3>Objective Tracking</h3><p>When two explanations of your results would each call for a different action, does your process find out which is true?</p></article>
+    <article class="card cap"><span class="tag">X2</span><h3>Cross-Context Safety Transfer</h3><p>Does your process keep you away from the action that cannot be undone and offers nothing further?</p></article>
+    <article class="card cap"><span class="tag">X3</span><h3>Global Attractor Exploration</h3><p>Does it keep looking for something better than a comfortable plateau?</p></article>
+    <article class="card cap"><span class="tag">X4</span><h3>Policy Simplification</h3><p>When the evidence has settled, does it commit?</p></article>
+    <article class="card cap"><span class="tag">X5</span><h3>Feasibility Projection</h3><p>Does it hold a hard limit fixed, whatever the reward on offer?</p></article>
+    <article class="card cap"><span class="tag">X6</span><h3>Feedback Adaptation</h3><p>When the world changes, does it let go of what the old world taught?</p></article>
+  </div>
+  <p class="classc">Every business decision area is in Class C, because information is incomplete, commitments are often irreversible, options can be comfortable without being best, some limits cannot be traded and markets change. One situation is enough.</p>
+  <div class="links"><a class="btn ghost" href="https://github.com/literacity/decisional-assurance/blob/main/docs/self-check.md">Test your own decisions with the self-check</a></div>
+</section>
+
+<!-- 3 Evidence -->
+<section class="wrap s" id="evidence" aria-labelledby="ev-h">
+  <div class="s-head">
+    <p class="eyebrow">Evidence</p>
+    <h2 id="ev-h">The evidence</h2>
+    <p class="lead"><em>On Eroding Trust in Decision Firms</em> is a synthesis of 26 independence-rated reports published between August 2020 and August 2026. Fourteen cover eight major consulting and audit firms. Twelve cover the industry, academic assessments and counter-narratives. It was compiled on 2026-08-24 and rechecked on 2026-10-06, independently of any client, firm or interested party.</p>
+  </div>
+  <div class="grid2">
+    <article class="card finding"><div class="big">6 of 8</div><p>Six of the eight firms were implicated in a significant scandal in the period.</p></article>
+    <article class="card finding"><div class="big">US$77 billion</div><p>Advisory fees now exceed audit fees across the Big Four: US$77 billion against US$53 billion (Bloomberg Tax, 2022-08-17).</p></article>
+    <article class="card finding"><div class="big">65%</div><p>In a survey of 1,002 senior executives sponsored by IBM, 65% said traditional consulting no longer delivers real value and 13% rated it highly effective (HFS Research, 2025-11-11; the Dossier rates this source Low-Medium for independence).</p></article>
+    <article class="card finding"><div class="big">Entry 14</div><p>A peer-reviewed study of KPMG in Germany found that after failures in its non-audit work, its audit clients suffered negative capital-market reactions and KPMG itself faced no significant consequences.</p></article>
+  </div>
+  <div class="card plain" style="margin-top:18px">
+    <div class="split" role="img" aria-label="Failures classified roughly 65% structural decisions and 35% operational execution"><div class="a">65% structural decisions</div><div class="b">35% operational execution</div></div>
+    <p>The Dossier classifies the failures it documents at roughly 65% structural decisions and 35% operational execution. It treats the operational failures as the visible symptoms and the structure as the cause. The split is the Dossier&rsquo;s own classification. When the cause is structural, the question to ask is what the structure needs, and the next section answers it.</p>
+  </div>
+  <div class="links">
+    <a class="btn ghost" href="https://decisional-integrity.github.io/Field/dossier/">Read the Dossier</a>
+    <a class="btn ghost" href="https://github.com/literacity/decisional-assurance/blob/main/docs/choosing-an-adviser.md">Ask the same question of your adviser</a>
+  </div>
+  <div class="cta"><p>An engagement begins with a discovery call.</p><div class="actions"><a class="btn primary" href="https://calendly.com/literacity/30min" target="_blank" rel="noopener">Book a discovery call</a></div></div>
+</section>
+
+<!-- 4 Mathematics -->
+<section class="wrap s" id="mathematics" aria-labelledby="m-h">
+  <div class="s-head">
+    <p class="eyebrow">Mathematics</p>
+    <h2 id="m-h">The mathematics</h2>
+  </div>
+
+  <h3>Six situations, six primitives</h3>
+  <p class="lead">A decision structure faces up to six situations, P1 to P6, and each has a matching capability, X1 to X6. The theory applies to environments in Class C, which show at least one of the six.</p>
+  <div class="tw"><table>
+    <thead><tr><th scope="col">Situation</th><th scope="col">In plain terms</th><th scope="col">Primitive</th></tr></thead>
+    <tbody>
+      <tr><td class="key">P1 Reward ambiguity</td><td>More than one explanation of what is working fits the evidence, each calls for a different action, and only results over time separate them.</td><td class="key">X1 Objective Tracking</td></tr>
+      <tr><td class="key">P2 Absorbing trap</td><td>Some action, once taken, cannot be undone and offers nothing further, and the structure can reach it.</td><td class="key">X2 Cross-Context Safety Transfer</td></tr>
+      <tr><td class="key">P3 Local optimum</td><td>A comfortable plateau keeps the structure in place while a better region exists, and reaching it costs something first.</td><td class="key">X3 Global Attractor Exploration</td></tr>
+      <tr><td class="key">P4 Deterministic optimum</td><td>The evidence has settled and one option clearly beats the alternatives.</td><td class="key">X4 Policy Simplification</td></tr>
+      <tr><td class="key">P5 Constrained feasibility</td><td>Some moves are off the table whatever the upside, because breaching the limit costs more than any reward can offset.</td><td class="key">X5 Feasibility Projection</td></tr>
+      <tr><td class="key">P6 Nonstationarity</td><td>A relationship the structure relies on has changed.</td><td class="key">X6 Feedback Adaptation</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 style="margin-top:38px">Failure has one shape</h3>
+  <p class="lead">Where the matching capability is missing, loss grows in proportion to time, whatever else the structure does well. The paper calls this linear regret. If the best available option pays 100 each period and a structure captures 90, the gap is 10 every period: 10 after one period, 100 after ten, 1,000 after a hundred.</p>
+  <img class="fig" src="assets/02-loss-grows-with-time.png" width="800" alt="A chart of the gap between the best available option and a structure missing a primitive, growing from 10 after one period to 100 after ten and 1,000 after a hundred">
+  <p class="lead" style="margin-top:18px">A good year can hide the gap. A process that lacks a required capability can post steady, positive results for a long time while the gap grows underneath.</p>
+
+  <h3 style="margin-top:38px">Three parts</h3>
+  <div class="grid3">
+    <article class="card part"><span class="tag">Part I</span><p>Proves, for each primitive, that a structure lacking it suffers linear regret.</p></article>
+    <article class="card part"><span class="tag">Part II</span><p>Proves that none of the six can stand in for another, across all thirty ordered pairs, from one master theorem.</p></article>
+    <article class="card part"><span class="tag">Part III</span><p>A machine-checked bridge towards sufficiency, built on hypotheses that sufficiency work fixes for each organisation.</p></article>
+  </div>
+  <p style="margin-top:14px">Parts I and II hold without conditions.</p>
+
+  <h3 style="margin-top:38px">Machine-checked</h3>
+  <p class="lead">Lean 4 checks every step. The proof runs to 12,667 lines in seven files, with zero <code>sorry</code>, zero custom <code>axiom</code> and zero <code>opaque</code> definitions as of 2026-10-24, and it rests on Mathlib&rsquo;s axioms alone. Anyone can rebuild it from the Lean repository. The paper is licensed CC BY 4.0 and the Lean code MIT.</p>
+
+  <h3 style="margin-top:38px">A small risk that repeats</h3>
+  <p class="lead">At a 5% chance each time, the chance of having made the irreversible mistake at least once is 64.2% after 20 times and 92.3% after 50.</p>
+  <img class="fig" src="assets/03-small-risk-clock.png" width="800" alt="Bars showing the chance of having made an irreversible mistake at least once for five combinations of chance and repetitions, from 63.4% to 92.3%">
+
+  <div class="links">
+    <a class="btn ghost" href="https://doi.org/10.5281/zenodo.23080967">Read the paper (DOI 10.5281/zenodo.23080967)</a>
+    <a class="btn ghost" href="https://github.com/M-Ismail-ZA/IsmailsPrimitives">Rebuild the proof</a>
+  </div>
+</section>
+
+<!-- 5 Trace -->
+<section class="wrap s" id="trace" aria-labelledby="t-h">
+  <div class="s-head">
+    <p class="eyebrow">The Trace</p>
+    <h2 id="t-h">Every finding traces to the axioms</h2>
+    <p class="lead">Every Literacity finding can be followed, one reference at a time, down to the axioms.</p>
+  </div>
+  <ol class="trace">
+    <li><span class="n">1</span><div><h3>Literacity&rsquo;s work</h3><p>Every finding names the public criterion it rests on.</p></div></li>
+    <li><span class="n">2</span><div><h3>The field</h3><p>Each criterion says what a decision structure must show to possess one primitive, and names the Lean definitions it rests on.</p></div></li>
+    <li><span class="n">3</span><div><h3>The paper</h3><p>The criteria rest on numbered results, and the paper&rsquo;s appendix maps each result to a Lean identifier.</p></div></li>
+    <li><span class="n">4</span><div><h3>The Lean proof</h3><p>Each result is a named theorem, with a file and a line.</p></div></li>
+    <li class="last"><span class="n">5</span><div><h3>The axioms</h3><p>Lean&rsquo;s kernel checks every step from Mathlib&rsquo;s axioms alone.</p></div></li>
+  </ol>
+
+  <p class="sub-h">The necessity theorems</p>
+  <div class="tw"><table>
+    <thead><tr><th scope="col">Primitive</th><th scope="col">Theorem</th><th scope="col">Location</th></tr></thead>
+    <tbody>
+      <tr><td class="key">X1 Objective Tracking</td><td><code>necessity_x1</code></td><td><code>Phase3.lean</code>, line 122</td></tr>
+      <tr><td class="key">X2 Cross-Context Safety Transfer</td><td><code>necessity_x2</code></td><td><code>Phase3.lean</code>, line 931</td></tr>
+      <tr><td class="key">X3 Global Attractor Exploration</td><td><code>necessity_x3</code></td><td><code>Phase3.lean</code>, line 1556</td></tr>
+      <tr><td class="key">X4 Policy Simplification</td><td><code>necessity_x4</code></td><td><code>Phase3.lean</code>, line 1831</td></tr>
+      <tr><td class="key">X5 Feasibility Projection</td><td><code>necessity_x5</code></td><td><code>Phase3.lean</code>, line 2046</td></tr>
+      <tr><td class="key">X6 Feedback Adaptation</td><td><code>necessity_x6</code></td><td><code>Phase3.lean</code>, line 2575</td></tr>
+    </tbody>
+  </table></div>
+  <p style="margin-top:14px">All thirty independence results follow from <code>mutual_independence</code> at <code>Phase4.lean</code>, line 1480.</p>
+
+  <p class="sub-h">Three commands anyone can run</p>
+  <p>From the root of the Lean repository.</p>
+  <div class="cmd">wc -l SixPrimitives/*.lean</div>
+  <p>Totals 12,667 lines across seven files as of 2026-10-24.</p>
+  <div class="cmd">grep -rnw -e sorry -e axiom -e opaque SixPrimitives/</div>
+  <p>Prints nothing.</p>
+  <div class="cmd">grep -rn "set_option" SixPrimitives/</div>
+  <p>Prints one line, in <code>Phase2.lean</code>, which raises an instance-search time limit.</p>
+  <div class="links"><a class="btn ghost" href="https://github.com/literacity/decisional-assurance/blob/main/docs/the-trace.md">Follow one finding down</a></div>
+</section>
+
+<!-- 6 Services -->
+<section class="wrap s" id="services" aria-labelledby="sv-h">
+  <div class="s-head">
+    <p class="eyebrow">Services</p>
+    <h2 id="sv-h">Five services and two self-service checks</h2>
+  </div>
+  <div class="grid3">
+    <article class="card svc"><span class="tag">1</span><h3>Audit</h3>
+      <dl><dt>The question it answers</dt><dd>Where does my decision structure stand against the six?</dd>
+      <dt>What you receive</dt><dd>A finding for each primitive, citing the public criterion it rests on, private to you.</dd>
+      <dt>For whom</dt><dd>People who sign off decisions, and anyone about to hire an adviser.</dd>
+      <dt>Public record</dt><dd>None. Findings stay private.</dd></dl>
+      <a class="btn primary go" href="https://calendly.com/literacity/30min" target="_blank" rel="noopener">Book a discovery call</a></article>
+    <article class="card svc"><span class="tag">2</span><h3>Build support</h3>
+      <dl><dt>The question it answers</dt><dd>How do I close a gap the audit found?</dd>
+      <dt>What you receive</dt><dd>The missing mechanism installed with the tools you choose. A spreadsheet and a customer-relationship system can both qualify, because the test is whether the tool performs the function.</dd>
+      <dt>For whom</dt><dd>Organisations whose audit found a gap.</dd>
+      <dt>Public record</dt><dd>None.</dd></dl>
+      <a class="btn primary go" href="https://calendly.com/literacity/30min" target="_blank" rel="noopener">Book a discovery call</a></article>
+    <article class="card svc"><span class="tag">3</span><h3>Verification</h3>
+      <dl><dt>The question it answers</dt><dd>Can I show a dated, public record that my structure has the six?</dd>
+      <dt>What you receive</dt><dd>A statement naming your organisation, what was checked, the criteria version and the sample, valid for twelve months and listed in the registry.</dd>
+      <dt>For whom</dt><dd>Organisations and advisers that want a record anyone can check.</dd>
+      <dt>Public record</dt><dd>The registry lists passes only.</dd></dl>
+      <a class="btn primary go" href="https://calendly.com/literacity/30min" target="_blank" rel="noopener">Book a discovery call</a></article>
+    <article class="card svc"><span class="tag">4</span><h3>Training</h3>
+      <dl><dt>The question it answers</dt><dd>Can my people evaluate their own systems?</dd>
+      <dt>What you receive</dt><dd>An executive briefing, team training on your own decision records, or assessor preparation.</dd>
+      <dt>For whom</dt><dd>Executives, teams and candidates for the assessor role.</dd>
+      <dt>Public record</dt><dd>None.</dd></dl>
+      <a class="btn primary go" href="https://calendly.com/literacity/30min" target="_blank" rel="noopener">Book a discovery call</a></article>
+    <article class="card svc"><span class="tag">5</span><h3>Re-verification</h3>
+      <dl><dt>The question it answers</dt><dd>Is my verification still current?</dd>
+      <dt>What you receive</dt><dd>A fresh check after a material change or at the end of twelve months. After a first audit with failures, a resubmission within six weeks re-checks only the primitives that failed.</dd>
+      <dt>For whom</dt><dd>Verified organisations.</dd>
+      <dt>Public record</dt><dd>The registry updates.</dd></dl>
+      <a class="btn primary go" href="https://calendly.com/literacity/30min" target="_blank" rel="noopener">Book a discovery call</a></article>
+    <article class="card svc plain"><span class="tag">Self-service</span><h3>Two checks</h3>
+      <dl><dt>The question it answers</dt><dd>Where do my own records stand before any conversation?</dd>
+      <dt>What you receive</dt><dd>The self-check for your organisation and the proposal check for any proposal or adviser, Literacity included.</dd>
+      <dt>For whom</dt><dd>Anyone.</dd>
+      <dt>Public record</dt><dd>None.</dd></dl>
+      <a class="btn ghost go" href="https://github.com/literacity/decisional-assurance/blob/main/docs/self-check.md">Open the self-check</a>
+      <a class="btn ghost go" style="margin-top:10px" href="https://github.com/literacity/decisional-assurance/blob/main/docs/choosing-an-adviser.md">Open the proposal check</a></article>
+  </div>
+  <div class="dates">
+    <div class="card plain"><p>Sufficiency engagements are planned from Q4 2027.</p></div>
+    <div class="card plain"><p>The first cohort of verifications will be published by Q2 2027, and the registry lists each as it is issued.</p></div>
+  </div>
+
+  <p class="sub-h">What the audit reads</p>
+  <p class="lead">The audit looks at how decisions are made, so it proceeds without access to what the decisions were about. The material is the organisation&rsquo;s decision records: past decisions with their evidence, the framework in use, the decision process in effect, and the templates and procedures for new decisions. The sample is chosen by a rule fixed before the evidence is read and includes one case that succeeded, one that failed and one still in progress. Case materials stay private, and only the fact and date of a pass are public.</p>
+
+  <p class="sub-h">The verification statement</p>
+  <div class="quote"><p>Ismail and Literacity verified that <span class="f">Company</span> was evaluated on <span class="f">date</span> and found to possess Ismail&rsquo;s Primitives in its decision structure. Evaluated against criteria version <span class="f">x</span> on a sample of <span class="f">y</span>. Valid for twelve months from <span class="f">date</span>.</p></div>
+
+  <div class="cta"><p>An engagement begins with a discovery call.</p><div class="actions"><a class="btn primary" href="https://calendly.com/literacity/30min" target="_blank" rel="noopener">Book a discovery call</a></div></div>
+</section>
+
+<!-- 7 For you -->
+<section class="wrap s" id="for-you" aria-labelledby="fy-h">
+  <div class="s-head">
+    <p class="eyebrow">For you</p>
+    <h2 id="fy-h">What&rsquo;s in it for you</h2>
+    <p class="lead">When the work is done, you hold a dated statement that your decision structure has the six capabilities mathematics has proved every sound structure needs, backed by a proof you can point anyone to.</p>
+  </div>
+
+  <h3>Where you stand out</h3>
+  <div class="grid2">
+    <article class="card plain"><h3>Rules of practice</h3><p>Most decision frameworks in advisory are rules of practice. SWOT, MECE and stage gates are examples, and none of them comes with a machine-checked proof that a structure needs it.</p></article>
+    <article class="card"><h3>Ismail&rsquo;s Primitives</h3><p>Six capabilities, each proved necessary, with the proof checked by Lean 4 and open for anyone to rebuild.</p></article>
+  </div>
+  <div class="banner">As of 2026-10-22, no advisory firm offers a decision framework whose necessity is machine-checked. Ismail checked for one, and a public search on the same date found none.</div>
+
+  <h3 style="margin-top:38px">Ten lines a verified firm can say</h3>
+  <ol class="ten">
+    <li><span class="n">1</span>Our decision structure has the six capabilities that machine-checked mathematics shows every sound structure needs.</li>
+    <li><span class="n">2</span>No other adviser holds this verification. Check the registry.</li>
+    <li><span class="n">3</span>Our edge is rigor: the mathematics behind our advice is open for you to check.</li>
+    <li><span class="n">4</span>Every line of our advice traces to the axioms, and anyone can rebuild the proof.</li>
+    <li><span class="n">5</span>Our verification was carried out by the team at Literacity and approved by the mathematician who proved the primitives.</li>
+    <li><span class="n">6</span>Our verification is dated, names what was checked and can be confirmed by anyone.</li>
+    <li><span class="n">7</span>The audit examines how decisions are made, and the case materials stay private.</li>
+    <li><span class="n">8</span>We re-verify, so the claim stays current.</li>
+    <li><span class="n">9</span>Every case study we show says how it matches your situation on six points.</li>
+    <li><span class="n">10</span>Every proposal we write shows its evidence for each of the six.</li>
+  </ol>
+  <p style="margin-top:18px">If you advise others, all ten lines apply. If you run an organisation and want to show your board, lenders or partners how you decide, the first eight apply.</p>
+  <p>A verified firm can point clients and partners to the mathematics and invite them to check it.</p>
+  <p>The registry is empty today. The first cohort will be published by Q2 2027.</p>
+  <div class="links"><a class="btn ghost" href="https://github.com/literacity/decisional-assurance/blob/main/docs/certification/registry.md">See the registry</a><a class="btn ghost" href="https://github.com/literacity/decisional-assurance/blob/main/docs/whats-in-it-for-you.md">Read the full page</a></div>
+</section>
+
+<!-- 8 How -->
+<section class="wrap s" id="how" aria-labelledby="h-h">
+  <div class="s-head">
+    <p class="eyebrow">How it runs</p>
+    <h2 id="h-h">How an engagement runs</h2>
+  </div>
+  <ol class="steps">
+    <li><span class="n">1</span><h3>Discovery</h3><p>Scope is agreed after this step.</p></li>
+    <li><span class="n">2</span><h3>Audit</h3><p>The evidence is reviewed against the public criteria.</p></li>
+    <li><span class="n">3</span><h3>Findings</h3><p>Each finding cites the public criterion it rests on, so the client can check it against the field.</p></li>
+    <li><span class="n">4</span><h3>Build support</h3><p>Where the audit found gaps. The client chooses its own tools.</p></li>
+    <li><span class="n">5</span><h3>Verdict</h3><p>A pass means possession of all six primitives.</p></li>
+    <li><span class="n">6</span><h3>Statement and registry</h3><p>On a pass, a public statement records the verification, and the registry lists it.</p></li>
+    <li><span class="n">7</span><h3>Re-verification</h3><p>A verdict applies at a date.</p></li>
+  </ol>
+  <div class="chain">
+    <article class="card"><span class="tag">1</span><p>Lean verifies Ismail.</p></article>
+    <article class="card"><span class="tag">2</span><p>Ismail verifies the application.</p></article>
+    <article class="card"><span class="tag">3</span><p>The client verifies that those two say the same thing.</p></article>
+  </div>
+  <p style="margin-top:18px" class="lead">Scope is agreed for each engagement after the discovery call, because a small business and a large corporation differ in the processes in scope, the evidence available and the terms that apply.</p>
+</section>
+
+<!-- 9 About -->
+<section class="wrap s" id="about" aria-labelledby="a-h">
+  <div class="s-head">
+    <p class="eyebrow">About</p>
+    <h2 id="a-h">Ismail and the team</h2>
+  </div>
+  <div class="about">
+    <div class="portrait"><img src="assets/muhammed-ismail.png" width="745" height="931" alt="Portrait of Muhammed Ismail"></div>
+    <div>
+      <p>Muhammed Ismail is a theoretical mathematician in South Africa. He proved that six structural capabilities are necessary for a decision-maker to avoid failure under uncertainty, checked the proof in Lean 4, and owns and directs Literacity, the service that applies it.</p>
+      <p>In September 2025 Ismail noticed that his own decisions followed a recurring six-step pattern, which he first treated as a personal heuristic. He asked whether the pattern could be proved. He then answered his own question by proving it in Lean 4.</p>
+      <ol class="timeline">
+        <li><b>September 2025</b>Noticed the pattern.</li>
+        <li><b>28 January 2026</b>First companion paper.</li>
+        <li><b>8 April 2026</b>Second companion paper.</li>
+        <li><b>May to June 2026</b>Moved the work into Lean 4.</li>
+        <li><b>July 2026</b>Released Ismail&rsquo;s Primitives and the Glossary.</li>
+      </ol>
+      <p>The record: six papers on Zenodo under CC BY 4.0, three public repositories (IsmailsPrimitives, IsmailsGlossary and IsmailsProtocols) and the Lean proof.</p>
+    </div>
+  </div>
+
+  <p class="sub-h">The team</p>
+  <p class="lead">Literacity is a team whose work rests on one body of research, Ismail&rsquo;s, from start to finish. The team carries out every audit. Ismail founded and leads Literacity, trains the team in the research and is the final arbiter of every verification. Literacity Pty Ltd, registration number 2016/135857/07, was founded in 2016 and is owned and directed by him.</p>
+  <p class="lead">The approving role rests on public artefacts, and Ismail&rsquo;s own approval rests on the same ones. Another person can take the role by presenting artefacts of the same type and depth. As of 2026-10-22 no one else has presented that proof.</p>
+
+  <p class="sub-h">Three public accounts</p>
+  <p class="lead">They are kept separate so Literacity&rsquo;s work can be checked against open material.</p>
+  <div class="grid3">
+    <article class="card"><h3>The research</h3><p>The Lean proof and paper are the research.</p></article>
+    <article class="card"><h3>The field</h3><p>The field is held by its originator, separate from any commercial application.</p></article>
+    <article class="card"><h3>The commercial service</h3><p>Literacity is the commercial service and links to the field.</p></article>
+  </div>
+  <div class="links">
+    <a class="btn ghost" href="https://github.com/literacity/decisional-assurance/blob/main/docs/about/muhammed-ismail.md">Ismail&rsquo;s full profile</a>
+    <a class="btn ghost" href="https://github.com/M-Ismail-ZA">GitHub</a>
+    <a class="btn ghost" href="https://orcid.org/0009-0000-3713-7105">ORCID</a>
+    <a class="btn ghost" href="https://www.linkedin.com/in/researcher-adaptationtheory/">LinkedIn</a>
+  </div>
+  <div class="cta"><p>An engagement begins with a discovery call.</p><div class="actions"><a class="btn primary" href="https://calendly.com/literacity/30min" target="_blank" rel="noopener">Book a discovery call</a><a class="btn ghost" href="mailto:literacity@outlook.com?subject=Discovery%20call">Email Ismail directly</a></div></div>
+</section>
+
+<!-- 10 Questions -->
+<section class="wrap s" id="questions" aria-labelledby="q-h">
+  <div class="s-head">
+    <p class="eyebrow">Questions</p>
+    <h2 id="q-h">Questions</h2>
+  </div>
+  <div class="faq">
+    <details><summary>Is this a guarantee?</summary><div class="ans"><p>It is a guarantee about failure. A plan that lacks a primitive will fail. Possession of all six is where every sound decision starts, and your strategy is what you build on it. Sufficiency work is planned from Q4 2027.</p></div></details>
+    <details><summary>What does &ldquo;fail&rdquo; mean here?</summary><div class="ans"><p>In the proof, failure means linear regret: the gap between what a structure achieves and the best available grows in proportion to time, without limit.</p></div></details>
+    <details><summary>Does this apply to my organisation?</summary><div class="ans"><p>Yes. Every business decision area is in Class C. One situation is enough, and the self-check lets you see each one in your own decisions.</p></div></details>
+    <details><summary>Can a good consultant just do this?</summary><div class="ans"><p>A good consultant can read everything Literacity publishes. Assessing a real structure against the proofs takes a combination of disciplines that the field calls uncommon. Familiar methods supply part of the six, and none supplies all six on its own.</p></div></details>
+    <details><summary>What happens to our information?</summary><div class="ans"><p>Literacity analyses how decisions are made, so an audit proceeds without needing what the decisions were about. Case materials stay private, and the registry lists only the fact and date of a pass.</p></div></details>
+  </div>
+  <div class="links"><a class="btn ghost" href="https://github.com/literacity/decisional-assurance/blob/main/docs/about/faqs.md">All questions</a></div>
+</section>
+
+<!-- 11 Contact -->
+<section class="wrap s contact" id="contact" aria-labelledby="c-h">
+  <div class="card">
+    <p class="eyebrow">Contact</p>
+    <h2 id="c-h">Book a discovery call</h2>
+    <p class="lead">An engagement begins with a discovery call. Pick a time that suits you and Literacity will meet you then.</p>
+    <div class="actions" style="margin-top:6px"><a class="btn primary" href="https://calendly.com/literacity/30min" target="_blank" rel="noopener">Book a discovery call</a></div>
+    <div class="sub-h" style="margin-top:30px">Prefer to write first</div>
+    <div class="actions">
+      <a class="btn ghost" href="mailto:literacity@outlook.com?subject=Discovery%20call&amp;body=Name%3A%0AOrganisation%3A%0ADecision%20area%20I%20have%20in%20mind%3A">Email Ismail: literacity@outlook.com</a>
+      <a class="btn ghost" href="https://www.linkedin.com/company/literacity-research/">Literacity on LinkedIn</a>
+    </div>
+    <div class="msg"><b>A suggested message</b><p>Subject: Discovery call</p><p>Name:</p><p>Organisation:</p><p>Decision area I have in mind:</p></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="foot">
+    <div><img src="assets/logo-full.png" alt="Literacity"><p>Literacity Pty Ltd, registration number 2016/135857/07.</p></div>
+    <div>
+      <ul><li><a class="btn ghost sm" href="https://github.com/literacity/decisional-assurance">The repository</a></li>
+        <li><a class="btn ghost sm" href="https://decisional-integrity.github.io/Field/">The field</a></li>
+        <li><a class="btn ghost sm" href="https://doi.org/10.5281/zenodo.23080967">The paper</a></li>
+        <li><a class="btn ghost sm" href="https://github.com/M-Ismail-ZA/IsmailsPrimitives">The Lean repository</a></li>
+        <li><a class="btn ghost sm" href="https://github.com/literacity/decisional-assurance/blob/main/docs/tools/review-discipline.md">Review discipline</a></li>
+      </ul>
+      <p>The paper is licensed CC BY 4.0 and the Lean code MIT.</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
